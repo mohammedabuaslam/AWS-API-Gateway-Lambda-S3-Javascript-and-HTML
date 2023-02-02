@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center"><u>Intellinet.be Demo</u></h1>
+        <div class="alert alert-success"><strong><a href="https://store-html-files-for-demo.s3.ap-south-1.amazonaws.com/index.html">Click Here!</a></strong> to create a new record in the DB.</div>
+        <div class="alert alert-success"><strong><a href="https://store-html-files-for-demo.s3.ap-south-1.amazonaws.com/getallproducts.html">Click Here!</a></strong> to see all the records in the DB.</div>
+        <div class="alert alert-success"><strong><a href="https://store-html-files-for-demo.s3.ap-south-1.amazonaws.com/getsingleproduct.html">Click Here!</a></strong> to view a particular record from the DB.</div>
+        <form id="myForm">
+            <div class="form-group">
+                <label for="productId">Product ID</label>
+                <input type="text" class="form-control" name="productId" id="productId">
+            </div>
+            <div id="retrieved_data"></div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <script type="text/javascript">
+    var form = document.getElementById("myForm");
+    var imageInput = document.getElementById("image");
+
+
+
+    form.onsubmit = function(e) {
+        e.preventDefault();
+
+        var productId = document.getElementById('productId').value;
+
+        var settings = {
+            "url": "https://9ms6gm62ul.execute-api.ap-south-1.amazonaws.com/prod/product?product-id=" + productId,
+            "method": "GET",
+            "timeout": 0,
+        };
+
+        $.ajax(settings)
+            .done(function(response) {
+                $('#retrieved_data').html("<pre>" + JSON.stringify(response, null, 2) + "</pre>");
+            })
+            .fail(function(xhr) {
+                if (xhr.status === 404) {
+                    $('#retrieved_data').html("<pre> The data for the given product-id does not exist </pre>");
+                } else {
+                    // handle other error cases
+                }
+            });
+
+    };
+    </script>
+</body>
+
+</html>

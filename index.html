@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center"><u>Intellinet.be Demo</u></h1>
+        <div class="alert alert-success"><strong><a href="https://store-html-files-for-demo.s3.ap-south-1.amazonaws.com/index.html">Click Here!</a></strong> to create a new record in the DB.</div>
+        <div class="alert alert-success"><strong><a href="https://store-html-files-for-demo.s3.ap-south-1.amazonaws.com/getallproducts.html">Click Here!</a></strong> to see all the records in the DB.</div>
+        <div class="alert alert-success"><strong><a href="https://store-html-files-for-demo.s3.ap-south-1.amazonaws.com/getsingleproduct.html">Click Here!</a></strong> to view a particular record from the DB.</div>
+        <form id="myForm">
+            <div class="form-group">
+                <label for="productId">Product ID</label>
+                <input type="text" class="form-control" name="productId" id="productId">
+            </div>
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" class="form-control" name="firstName" id="firstName">
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" class="form-control" name="lastName" id="lastName">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" name="email" id="email">
+            </div>
+            <div class="form-group">
+                <label for="image">IDCard Image</label>
+                <input type="file" class="form-control-file" name="image" id="image">
+            </div>
+            <div class="form-group">
+                <label for="address">Address</label>
+                <textarea class="form-control" name="address" id="address" rows="3"></textarea>
+            </div>
+            <div id="successMessage"></div>
+            <div class="alert alert-info">Upon clicking submit, please wait till a success message is shown</div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <script type="text/javascript">
+    var form = document.getElementById("myForm");
+    var imageInput = document.getElementById("image");
+
+
+
+    form.onsubmit = function(e) {
+        e.preventDefault();
+        var file = imageInput.files[0]
+        var fileName = file.name;
+
+        var firstname = document.getElementById("firstName").value;
+        var lastname = document.getElementById('lastName').value;
+        var email = document.getElementById('email').value;
+        var productId = document.getElementById('productId').value;
+        var address = document.getElementById('address').value;
+
+        var reader = new FileReader();
+        reader.readAsDataURL(imageInput.files[0]);
+        reader.onload = function() {
+            var imageBase64 = reader.result;
+
+            $.ajax({
+                url: "https://9ms6gm62ul.execute-api.ap-south-1.amazonaws.com/prod/product",
+                type: "POST",
+                "headers": {
+                    "x-api-key": "s4EZrDIRXH6FEmpm8rzuo5Y3hPUJpg0S9R5FdW8Z",
+                },
+                processData: false,
+                contentType: false,
+                data: JSON.stringify({
+                    "product-id": productId,
+                    "fileName": fileName,
+                    "First_Name": firstname,
+                    "Last_Name": lastname,
+                    "Email": email,
+                    "Address": address,
+                    "Image_Url": imageBase64
+                }),
+                success: function(response) {
+                    console.log('Done')
+                    $('#successMessage').html('<div class="alert alert-success"><strong>Success!</strong> You details have been saved.</div>');
+                }
+            });
+        };
+    };
+    </script>
+</body>
+
+</html>
